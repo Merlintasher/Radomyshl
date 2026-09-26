@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Радомишль — обхід</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core@5/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin@5/index.css" />
+<link rel="stylesheet" href="style.css" />
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "@photo-sphere-viewer/core": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core@5/index.module.js",
+    "@photo-sphere-viewer/markers-plugin": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin@5/index.module.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- 2D-карта: сітка + (опційно) підложка плану + лінія маршруту + точки-панорами -->
+  <div id="map-view">
+  <!-- PDF-подложка -->
+  <div id="pdf-layer">
+    <canvas id="pdf-canvas"></canvas>
+  </div>
+</div>
+  <div id="coord-readout"></div>
+
+  <!-- Верхній HUD -->
+  <header id="hud-top">
+    <!-- "Штамп" креслення замість типової картки-заголовка -->
+    <div class="hud-panel" id="title-panel">
+      <div class="tb-title">
+        <h1>Радомишль</h1>
+        <span class="tb-tag">обхід · 360°</span>
+      </div>
+      <div class="tb-grid">
+        <div class="tb-cell">
+          <span class="tb-label">точок</span>
+          <span class="tb-value" id="stat-panoramas">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-actions">
+      <div class="compass" title="Північ — вгору" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+          <path d="M12 2 15 11 12 9 9 11z" fill="currentColor"/>
+          <path d="M12 22 9 13 12 15 15 13z" fill="currentColor" opacity="0.4"/>
+        </svg>
+      </div>
+      <button id="reset-view" class="icon-btn" title="Показати весь маршрут" aria-label="Показати весь маршрут">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm16 0v6h-6v-2h4v-4h2z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Завантаження -->
+  <div id="loading">
+    <div class="loader-mark"></div>
+    <p id="loading-status">Ініціалізація…</p>
+  </div>
+
+  <!-- Повноекранна панорама -->
+  <div id="panorama-view">
+    <div id="panorama-container"></div>
+
+    <div id="pano-topbar">
+      <button id="pano-close" class="icon-btn" aria-label="Закрити панораму, повернутись до карти">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 10.6 5.4 4 4 5.4 10.6 12 4 18.6 5.4 20 12 13.4 18.6 20 20 18.6 13.4 12 20 5.4 18.6 4z" fill="currentColor"/></svg>
+      </button>
+      <div id="pano-caption" class="caption-pill"></div>
+    </div>
+
+    <button id="pano-prev" class="nav-arrow nav-arrow--left" aria-label="Попередня панорама">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 4 6 12l9.5 8 1.4-1.4L8.8 12l8.1-6.6z" fill="currentColor"/></svg>
+    </button>
+    <button id="pano-next" class="nav-arrow nav-arrow--right" aria-label="Наступна панорама">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8.5 4 7.1 5.4l8.1 6.6-8.1 6.6L8.5 20 18 12z" fill="currentColor"/></svg>
+    </button>
+
+    <!-- Мінікарта: положення на маршруті під час перегляду панорами,
+         теж клікабельна -->
+    <div id="mini-map-panel" class="hud-panel">
+      <span id="mini-map-label">Маршрут</span>
+      <div id="mini-map"></div>
+    </div>
+  </div>
+
+  <!-- Перехід-діафрагма -->
+  <div id="iris"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
